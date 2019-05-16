@@ -43,6 +43,8 @@ export default {
   },
   methods: {
     updateMenuState() {
+      this.isShowAside = !this.isShowAside;
+      this.$bus.$emit("showAside", this.isShowAside);
       this.btnType = this.btnType == "info" ? "primary" : "info";
     }
   }

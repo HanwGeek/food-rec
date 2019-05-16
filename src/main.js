@@ -5,11 +5,10 @@ import App from './App'
 import axios from 'axios'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-// import mapboxgl from 'mapbox-gl'
-// Vue.prototype.mbgl = mapboxgl;
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
+Vue.prototype.$bus = new Vue();
 Vue.use(ElementUI);
 /* eslint-disable no-new */
 new Vue({
