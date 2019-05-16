@@ -2,6 +2,7 @@
   <div id="app">
     <el-container id="rec" ref="rec">
       <NavHeader />
+      <SideBar/>
       <MapLayer mapWidth="100%" mapHeight="600px" />
       <Footer />
     </el-container>
@@ -13,9 +14,11 @@ import NavHeader from '@/components/nav-header'
 import Footer from '@/components/footer'
 // import SideBar from '@components/side-bar'
 import MapLayer from '@/components/map-layer'
+import SideBar from "./components/side-bar";
 export default {
   name: 'App',
   components: {
+      SideBar,
     NavHeader,
     Footer,
     MapLayer
