@@ -13,6 +13,7 @@
     "axios": "^0.18.0",
     "element-ui": "^2.8.2",
     "mapbox-gl": "^0.54.0",
+    "qs": "^6.7.0",
     "vue": "^2.5.2"
   },
   "devDependencies": {
