@@ -19,7 +19,6 @@ export default {
   data () {
     return {
       map: null,
-      icon: require('../assets/icon.svg'),
       feat: null,
       _id: null,
       title: null,
@@ -34,39 +33,70 @@ export default {
       const map = new mapboxgl.Map({
         container: this.$refs.basicMapbox,
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: [114.305, 30.592],
-        zoom: 14
+        center: [114.305, 30.57],
+        zoom: 12
       });
       map.on('load', function () {
-        map.addLayer({
-          'id': 'rest',
-          'type': 'symbol',
-          "source": {
-            "type": "vector",
-            'scheme': 'tms',
-            "tiles": ["http://localhost:8080/geoserver/gwc/service/tms/1.0.0/fff%3Afff@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf"],
+          map.loadImage('https://i.loli.net/2019/05/17/5cde27b63b76c77641.png', function(error, image) {
+              if (error) throw error;
+          map.addImage('icon', image);
+      });
+          map.addLayer({
+            'id': 'rest',
+             'type': 'symbol',
+             "source": {
+             "type": "vector",
+             'scheme': 'tms',
+              "tiles": ["http://localhost:8080/geoserver/gwc/service/tms/1.0.0/house%3Ahousep@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf"],
           },
-          'source-layer': 'fff',
+            'source-layer': 'housep',
           'layout': {
-              "symbol-avoid-edges": true,
-              "icon-image":"restaurant-15",
-              "icon-allow-overlap":true,
-              "icon-size": 2
+              "icon-image":"icon",
+              "icon-allow-overlap": true,
+              "icon-ignore-placement": false,
+              "icon-size": 0.18
           },
           'paint': {
-              "icon-opacity": 0.5
+              "icon-opacity": 0.8
           },
-        })
+        });
+
       });
-      map.on('mousedown', 'rest', this.sendFeatSelected);
+
       this.map = map;
+      map.on('mousedown', 'rest', this.sendFeatSelected);
+
+        var popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+        map.on('mouseenter','rest',function(e){
+            map.getCanvas().style.cursor = 'pointer';
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var description = e.features[0].properties.title;
+            var feat = map.queryRenderedFeatures(e.point)[0];
+            this.price = feat.properties["price"];
+            this.area= feat.properties["area"];
+            this.type = feat.properties["type"];
+            this.address = feat.properties["address"];
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+            popup.setLngLat(coordinates)
+                .setHTML( '<h3>'+ this.type+'  &nbsp;&nbsp;' + this.address + '</h3><font size="2">'+ description+ '</font><p>'+ this.price+ '元/月'+ ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ this.area+ '平方米'+ '</p>')
+                .addTo(map);
+        });
+        map.on('mouseleave', 'rest', function() {
+            map.getCanvas().style.cursor = '';
+            popup.remove();
+        });
     },
-    sendFeatSelected(e) {
+    sendFeatSelected(e){
       var feat = this.map.queryRenderedFeatures(e.point)[0];
       this._id = feat.properties["_id"];
-      this.title = feat.properties["title"];
-      this.$bus.$emit("getFeatSelected", [this._id, this.title]);
-    }
+      this.address = feat.properties["address"];
+      this.$bus.$emit("getFeatSelected", [this._id, this.address]);
+    },
   },
   computed: {
       mapSize () {
@@ -78,20 +108,3 @@ export default {
   }
 }
 </script>
-<style>
-    /*.marker {*/
-        /*background-image: url('/build/logo.png');*/
-        /*background-size: cover;*/
-        /*width: 30px;*/
-        /*height: 30px;*/
-        /*border-radius: 40%;*/
-        /*cursor: pointer;*/
-    /*}*/
-    /*.mbgl-popup {*/
-        /*max-width: 200px;*/
-    /*}*/
-    /*.mapboxgl-popup-content {*/
-        /*text-align: center;*/
-        /*font-family: 'Open Sans', sans-serif;*/
-    /*}*/
-</style>

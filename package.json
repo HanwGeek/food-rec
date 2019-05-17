@@ -13,7 +13,11 @@
     "axios": "^0.18.0",
     "element-ui": "^2.8.2",
     "mapbox-gl": "^0.54.0",
+<<<<<<< HEAD
     "qs": "^6.7.0",
+=======
+    "svg-sprite-loader": "^4.1.6",
+>>>>>>> ce639897396f4e34efeca8d12a098c6d56f10110
     "vue": "^2.5.2"
   },
   "devDependencies": {

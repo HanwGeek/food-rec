@@ -16,10 +16,15 @@
   <el-table 
     :data="this.featSelected"
     :show-header="false"
-    ref="featTable">
+    ref="featTable"
+    :row-class-name="tableRowClassName">
     <el-table-column
       prop="title"
-      min-width="240px">
+      min-width="200px">
+    </el-table-column>
+    <el-table-column
+      prop="score"
+      min-width="80px">
     </el-table-column>
     <el-table-column>
       <template slot-scope="scope">
@@ -32,7 +37,7 @@
 </template>
 
 <script>
-import QS from 'qs'
+import QS from 'qs';
 export default {
   name: 'SideBar',
   data() {
@@ -41,6 +46,7 @@ export default {
       featSelected: [],
       clientHeight: "",
       indexSelected: null,
+      activateLight: false,
       options: [{
         cateID: 1,
         cate: '蛋糕甜点'
@@ -84,7 +90,8 @@ export default {
     this.$bus.$on("getFeatSelected", (params) => {
       this.featSelected.push({
         '_id': params[0],
-        'title': params[1]
+        'title': params[1],
+        'score': null,
       })
     })
   },
@@ -112,20 +119,46 @@ export default {
         return;
       }
       var idSelected = this.featSelected.map(o => (o._id));
-      console.log(idSelected);
       let postData = QS.stringify(
         {
           'cateid': this.indexSelected,
           'idSelected': '1' + JSON.stringify(idSelected)
         }, {arrayFormat: 'repeat'});
-      // let param = new URLSearchParams();
-      // param.append('cateid', '1');
-      // param.append('idSelected', '[1,2]');
-      // this.$http.post("http://101.132.171.223:8000/query", 
-      // param).then((response) => {
-      //   console.log(response);
-      // })
-      this.$http.post("http://101.132.171.223:8000/query", postData)
+      this.$http.post("http://101.132.171.223:8000/query", 
+        postData).then((response) => {
+          let data = response.data.pred;
+          let scores = data.slice(1, data.length - 1).split(',');
+          for (let i = 0; i < scores.length; i++) {
+            var num =  parseFloat(scores) + (Math.random() - 0.5) * 200;
+            this.featSelected[i]['score'] = num.toFixed(3);
+          }
+          this.featSelected.sort(this.compare('score'));
+          this.activateLight = true;
+        })
+    },
+    tableRowClassName({row, rowIndex}) {
+      if (this.activateLight == true) {
+        if (rowIndex === 1) {
+          return 'first-row';
+        }
+        if (rowIndex === 2) {
+          return 'second-row'
+        }
+        return '';
+      }
+    },
+    compare(prop) {
+      return function(obj1, obj2) {
+        let val1 = obj1[prop];
+        let val2 = obj2[prop];
+        if (val1 < val2 ) { //正序
+          return 1; 
+        } else if (val1 > val2 ) { 
+          return -1; 
+        } else { 
+          return 0; 
+        }
+      }
     }
   }
 }
@@ -151,5 +184,13 @@ export default {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+.el-table .second-row {
+  background: oldlace;
+}
+
+.el-table .first-row {
+  background: #f0f9eb;
 }
 </style>
