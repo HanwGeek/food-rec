@@ -1,7 +1,7 @@
 <template>
 <transition name="fade">
 <div id="side-bar" v-show="isShowAside">
-  <el-table 
+  <el-table
     :data="this.featSelected"
     :show-header="false"
     ref="featSelected">
