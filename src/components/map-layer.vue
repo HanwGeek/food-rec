@@ -33,8 +33,8 @@ export default {
       const map = new mapboxgl.Map({
         container: this.$refs.basicMapbox,
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: [114.305, 30.592],
-        zoom: 11
+        center: [114.305, 30.57],
+        zoom: 12
       });
       map.on('load', function () {
           map.loadImage('https://i.loli.net/2019/05/17/5cde27b63b76c77641.png', function(error, image) {
@@ -75,7 +75,7 @@ export default {
             var coordinates = e.features[0].geometry.coordinates.slice();
             var description = e.features[0].properties.title;
             var feat = map.queryRenderedFeatures(e.point)[0];
-            console.log(feat);
+            // console.log(feat);
             this.price = feat.properties["price"];
             this.area= feat.properties["area"];
             this.type = feat.properties["type"];
@@ -109,20 +109,3 @@ export default {
   }
 }
 </script>
-<style>
-    .marker {
-        /*background-image: url('/build/logo.png');*/
-        background-size: cover;
-        width: 30px;
-        height: 30px;
-        border-radius: 40%;
-        cursor: pointer;
-    }
-    popup {
-        max-width: 200px;
-    }
-    popup.content {
-        text-align: center;
-        font-family: 'Open Sans', sans-serif;
-    }
-</style>
