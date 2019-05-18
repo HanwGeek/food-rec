@@ -1,6 +1,6 @@
 # food-rec
 
-> The frontend of a restaurant recommandation system.
+> The frontend of a restaurant address recommandation system.
 
 ## Build Setup
 
